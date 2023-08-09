@@ -17,12 +17,32 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        releaseconfig {
+            keyAlias 'calendar.keystore'
+            keyPassword 'calendar12345'
+            storePassword 'calendar12345'
+            storeFile file(rootProject.file('calendar.keystore'))
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.releaseconfig
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseconfig
         }
     }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${defaultConfig.applicationId}_${defaultConfig.versionName}.apk"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
